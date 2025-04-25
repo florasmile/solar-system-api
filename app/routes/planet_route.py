@@ -1,8 +1,53 @@
-from flask import Blueprint, abort, make_response
+from flask import Blueprint, abort, make_response, request
+from ..db import db
+from ..models.planet import Planet
 # from app.models.planet import planets
 
 # create a blueprint
 planets_bp = Blueprint("planets_bp", __name__, url_prefix="/planets")
+
+
+@planets_bp.post("")
+def create_a_planet():
+    request_body = request.get_json()
+
+    new_planet = Planet(
+        name=request_body["name"],
+        description=request_body["description"],
+        diameter=request_body["diameter"],
+    )
+
+    db.session.add(new_planet)
+    db.session.commit()
+
+    response = {
+        "id": new_planet.id,
+        "name": new_planet.name,
+        "description": new_planet.description,
+        "diameter": new_planet.diameter,
+    }
+    return response, 201
+
+
+@planets_bp.get("/")
+def get_all_planets():
+    query = db.select(Planet).order_by(Planet.id)
+    planets = db.session.scalars(query)
+
+    response = []
+
+    for planet in planets:
+        response.append(
+            dict(
+                id=planet.id,
+                name=planet.name,
+                description=planet.description,
+                diameter=planet.diameter,
+            )
+        )
+
+    return response
+
 
 # @planets_bp.get("/")
 # def get_all_planets():
@@ -34,10 +79,10 @@ planets_bp = Blueprint("planets_bp", __name__, url_prefix="/planets")
 #   except:
 #     invalid = {"message": f"Planet id {planet_id} is invalid."}
 #     abort(make_response(invalid, 400))
-  
+
 #   for planet in planets:
 #     if planet.id == planet_id:
 #       return planet
-  
+
 #   not_found = {"message": f"Planet id {planet_id} not found."}
 #   abort(make_response(not_found, 404))
