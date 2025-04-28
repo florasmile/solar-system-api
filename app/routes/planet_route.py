@@ -49,6 +49,35 @@ def get_all_planets():
     return response
 
 
+@planets_bp.get("/<planet_id>")
+def get_a_planet(planet_id):
+    planet = validate_planet(planet_id)
+    planet_dic = dict(
+        id=planet.id,
+        name=planet.name,
+        description=planet.description,
+        diameter=planet.diameter,
+    )
+    return planet_dic
+
+
+# helper function to validate if the planet id can be converted to an int and exits in the planets
+def validate_planet(planet_id):
+    try:
+        planet_id = int(planet_id)
+    except:
+        invalid = {"message": f"Planet id {planet_id} is invalid."}
+        abort(make_response(invalid, 400))
+
+    query = db.select(Planet).where(Planet.id == planet_id)
+    planet = db.session.scalar(query)
+
+    if not planet:
+        not_found = {"message": f"Planet id {planet_id} not found."}
+        abort(make_response(not_found, 404))
+    return planet
+
+
 # @planets_bp.get("/")
 # def get_all_planets():
 #   result_list = []
@@ -60,29 +89,3 @@ def get_all_planets():
 #       diameter = planet.diameter
 #     ))
 #   return result_list
-
-# @planets_bp.get("/<planet_id>")
-# def get_a_planet(planet_id):
-#   planet = validate_planet(planet_id)
-#   planet_dic = dict(
-#           id = planet.id,
-#           name = planet.name,
-#           description = planet.description,
-#           diameter = planet.diameter
-#   )
-#   return planet_dic
-
-# #helper function to validate if the planet id can be converted to an int and exits in the planets
-# def validate_planet(planet_id):
-#   try:
-#     planet_id = int(planet_id)
-#   except:
-#     invalid = {"message": f"Planet id {planet_id} is invalid."}
-#     abort(make_response(invalid, 400))
-
-#   for planet in planets:
-#     if planet.id == planet_id:
-#       return planet
-
-#   not_found = {"message": f"Planet id {planet_id} not found."}
-#   abort(make_response(not_found, 404))
