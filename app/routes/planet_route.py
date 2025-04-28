@@ -1,4 +1,4 @@
-from flask import Blueprint, abort, make_response, request
+from flask import Blueprint, abort, make_response, request, Response
 from ..db import db
 from ..models.planet import Planet
 # from app.models.planet import planets
@@ -76,6 +76,19 @@ def validate_planet(planet_id):
         not_found = {"message": f"Planet id {planet_id} not found."}
         abort(make_response(not_found, 404))
     return planet
+
+
+@planets_bp.put("/<planet_id>")
+def update_planet(planet_id):
+    planet = validate_planet(planet_id)
+    request_body = request.get_json()
+
+    planet.name = request_body["name"]
+    planet.description = request_body["description"]
+    planet.diameter = request_body["diameter"]
+
+    db.session.commit()
+    return Response(status=204, mimetype="application/json")
 
 
 # @planets_bp.get("/")
