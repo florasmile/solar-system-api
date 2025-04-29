@@ -1,4 +1,5 @@
 from flask import Blueprint, abort, make_response, request, Response
+from sqlalchemy import desc
 from ..db import db
 from ..models.planet import Planet
 # from app.models.planet import planets
@@ -31,7 +32,20 @@ def create_a_planet():
 
 @planets_bp.get("/")
 def get_all_planets():
-    query = db.select(Planet).order_by(Planet.id)
+    query = db.select(Planet)
+
+    description_param = request.args.get("description")
+    if description_param:
+        query = query.where(Planet.description.ilike(f"%{description_param}%"))
+
+    min_diameter_param = request.args.get("min_diameter")
+    max_diameter_param = request.args.get("max_diameter")
+    if min_diameter_param:
+        query = query.where(Planet.diameter >= min_diameter_param)
+    if max_diameter_param:
+        query = query.where(Planet.diameter <= max_diameter_param)
+
+    query = query.order_by(desc(Planet.name))    
     planets = db.session.scalars(query)
 
     response = []
@@ -77,7 +91,6 @@ def validate_planet(planet_id):
         abort(make_response(not_found, 404))
     return planet
 
-
 @planets_bp.put("/<planet_id>")
 def update_planet(planet_id):
     planet = validate_planet(planet_id)
@@ -89,7 +102,6 @@ def update_planet(planet_id):
 
     db.session.commit()
     return Response(status=204, mimetype="application/json")
-
 
 @planets_bp.delete("/<planet_id>")
 def delete_planet(planet_id):
