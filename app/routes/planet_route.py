@@ -30,7 +30,7 @@ def create_a_planet():
     return response, 201
 
 
-@planets_bp.get("/")
+@planets_bp.get("")
 def get_all_planets():
     query = db.select(Planet)
 
@@ -45,7 +45,7 @@ def get_all_planets():
     if max_diameter_param:
         query = query.where(Planet.diameter <= max_diameter_param)
 
-    query = query.order_by(desc(Planet.name))    
+    query = query.order_by(desc(Planet.name))
     planets = db.session.scalars(query)
 
     response = []
@@ -91,6 +91,7 @@ def validate_planet(planet_id):
         abort(make_response(not_found, 404))
     return planet
 
+
 @planets_bp.put("/<planet_id>")
 def update_planet(planet_id):
     planet = validate_planet(planet_id)
@@ -102,6 +103,7 @@ def update_planet(planet_id):
 
     db.session.commit()
     return Response(status=204, mimetype="application/json")
+
 
 @planets_bp.delete("/<planet_id>")
 def delete_planet(planet_id):
