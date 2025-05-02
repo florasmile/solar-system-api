@@ -21,13 +21,7 @@ def create_a_planet():
     db.session.add(new_planet)
     db.session.commit()
 
-    response = {
-        "id": new_planet.id,
-        "name": new_planet.name,
-        "description": new_planet.description,
-        "diameter": new_planet.diameter,
-    }
-    return response, 201
+    return new_planet.to_dict(), 201
 
 
 @planets_bp.get("")
@@ -52,12 +46,7 @@ def get_all_planets():
 
     for planet in planets:
         response.append(
-            dict(
-                id=planet.id,
-                name=planet.name,
-                description=planet.description,
-                diameter=planet.diameter,
-            )
+            planet.to_dict()
         )
 
     return response
@@ -66,13 +55,8 @@ def get_all_planets():
 @planets_bp.get("/<planet_id>")
 def get_a_planet(planet_id):
     planet = validate_planet(planet_id)
-    planet_dic = dict(
-        id=planet.id,
-        name=planet.name,
-        description=planet.description,
-        diameter=planet.diameter,
-    )
-    return planet_dic
+
+    return planet.to_dict()
 
 
 # helper function to validate if the planet id can be converted to an int and exits in the planets

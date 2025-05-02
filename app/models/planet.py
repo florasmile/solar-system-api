@@ -7,6 +7,15 @@ class Planet(db.Model):
     description: Mapped[str]
     diameter: Mapped[float]
 
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "description": self.description,
+            "diameter": self.diameter,
+        }
+    
+
 
 
 # class Planet:
