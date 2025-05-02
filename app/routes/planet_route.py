@@ -77,10 +77,10 @@ def update_planet(planet_id):
     planet = validate_planet(planet_id)
     request_body = request.get_json()
 
-    # planet.update_from_dict(request_body)
-    planet.name = request_body["name"]
-    planet.description = request_body["description"]
-    planet.diameter = request_body["diameter"]
+    planet.update_from_dict(request_body)
+    # planet.name = request_body["name"]
+    # planet.description = request_body["description"]
+    # planet.diameter = request_body["diameter"]
 
     db.session.commit()
     return Response(status=204, mimetype="application/json")

@@ -17,17 +17,17 @@ class Planet(db.Model):
     
     @classmethod
     def from_dict(cls, planet_data):
-        
+
         return cls(
             name=planet_data["name"],
             description=planet_data["description"],
             diameter=planet_data["diameter"]
         )
     
-    # def update_from_dict(self, planet_data):
-    #     self.name=planet_data["name"],
-    #     self.description=planet_data["description"],
-    #     self.diameter=planet_data["diameter"]
+    def update_from_dict(self, planet_data):
+        self.name=planet_data["name"],
+        self.description=planet_data["description"],
+        self.diameter=planet_data["diameter"]
 
 
 
