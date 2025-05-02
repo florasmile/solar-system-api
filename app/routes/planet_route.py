@@ -12,11 +12,7 @@ planets_bp = Blueprint("planets_bp", __name__, url_prefix="/planets")
 def create_a_planet():
     request_body = request.get_json()
 
-    new_planet = Planet(
-        name=request_body["name"],
-        description=request_body["description"],
-        diameter=request_body["diameter"],
-    )
+    new_planet = validate_planet_data(request_body)
 
     db.session.add(new_planet)
     db.session.commit()
@@ -81,6 +77,7 @@ def update_planet(planet_id):
     planet = validate_planet(planet_id)
     request_body = request.get_json()
 
+    # planet.update_from_dict(request_body)
     planet.name = request_body["name"]
     planet.description = request_body["description"]
     planet.diameter = request_body["diameter"]
@@ -97,7 +94,13 @@ def delete_planet(planet_id):
 
     return Response(status=204, mimetype="applcation/json")
 
-
+def validate_planet_data(planet_data):
+    try:
+        new_planet = Planet.from_dict(planet_data)
+    except KeyError:
+        response = {"message": "missing planet information."}
+        abort(make_response(response, 400))
+    return new_planet
 # @planets_bp.get("/")
 # def get_all_planets():
 #   result_list = []
