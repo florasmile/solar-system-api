@@ -15,3 +15,11 @@ def validate_model(cls, model_id):
         not_found = {"message": f"{cls.__name__} id {model_id} not found."}
         abort(make_response(not_found, 404))
     return model
+
+def validate_model_data(cls, model_data):
+    try:
+        new_model = cls.from_dict(model_data)
+    except KeyError:
+        response = {"message": f"missing {cls.__name__} information."}
+        abort(make_response(response, 400))
+    return new_model
