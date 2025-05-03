@@ -18,16 +18,28 @@ class Planet(db.Model):
 
     @classmethod
     def from_dict(cls, planet_data):
+<<<<<<< HEAD
+=======
+
+>>>>>>> 181678e29ad204a701ec6c4279eca4b5fd9939aa
         return cls(
             name=planet_data["name"],
             description=planet_data["description"],
             diameter=planet_data["diameter"],
         )
+<<<<<<< HEAD
 
     # def update_from_dict(self, planet_data):
     #     self.name=planet_data["name"],
     #     self.description=planet_data["description"],
     #     self.diameter=planet_data["diameter"]
+=======
+    
+    def update_from_dict(self, planet_data):
+        self.name=planet_data["name"],
+        self.description=planet_data["description"],
+        self.diameter=planet_data["diameter"]
+>>>>>>> 181678e29ad204a701ec6c4279eca4b5fd9939aa
 
 
 # class Planet:
