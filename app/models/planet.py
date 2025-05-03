@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Mapped, mapped_column
 from ..db import db
 
+
 class Planet(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     name: Mapped[str]
@@ -14,21 +15,19 @@ class Planet(db.Model):
             "description": self.description,
             "diameter": self.diameter,
         }
-    
+
     @classmethod
     def from_dict(cls, planet_data):
-        
         return cls(
             name=planet_data["name"],
             description=planet_data["description"],
-            diameter=planet_data["diameter"]
+            diameter=planet_data["diameter"],
         )
-    
+
     # def update_from_dict(self, planet_data):
     #     self.name=planet_data["name"],
     #     self.description=planet_data["description"],
     #     self.diameter=planet_data["diameter"]
-
 
 
 # class Planet:
@@ -44,5 +43,3 @@ class Planet(db.Model):
 #     Planet(3, "Earth", "Our home planet, the only one known to support life.", 7.9),
 #     Planet(4, "Mars", "The red planet with the tallest volcano.", 4.2)
 # ]
-
-
