@@ -132,4 +132,4 @@ def test_delete_planet_not_found(client):
     response_body = response.get_json()
     # Assert
     assert response.status_code == 404
-    assert response_body == {"message": "planet 1 not found"}
+    assert response_body == {"message": "Planet id 1 not found."}
