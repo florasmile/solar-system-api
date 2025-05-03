@@ -2,7 +2,7 @@ from flask import Blueprint, abort, make_response, request, Response
 from sqlalchemy import desc
 from ..db import db
 from ..models.planet import Planet
-# from app.models.planet import planets
+from .route_utilities import validate_model
 
 # create a blueprint
 planets_bp = Blueprint("planets_bp", __name__, url_prefix="/planets")
@@ -50,31 +50,17 @@ def get_all_planets():
 
 @planets_bp.get("/<planet_id>")
 def get_a_planet(planet_id):
-    planet = validate_planet(planet_id)
+    planet = validate_model(Planet, planet_id)
 
     return planet.to_dict()
 
 
-# helper function to validate if the planet id can be converted to an int and exits in the planets
-def validate_planet(planet_id):
-    try:
-        planet_id = int(planet_id)
-    except:
-        invalid = {"message": f"Planet id {planet_id} is invalid."}
-        abort(make_response(invalid, 400))
 
-    query = db.select(Planet).where(Planet.id == planet_id)
-    planet = db.session.scalar(query)
-
-    if not planet:
-        not_found = {"message": f"Planet id {planet_id} not found."}
-        abort(make_response(not_found, 404))
-    return planet
 
 
 @planets_bp.put("/<planet_id>")
 def update_planet(planet_id):
-    planet = validate_planet(planet_id)
+    planet = validate_model(Planet, planet_id)
     request_body = request.get_json()
 
     planet.update_from_dict(request_body)
@@ -88,7 +74,7 @@ def update_planet(planet_id):
 
 @planets_bp.delete("/<planet_id>")
 def delete_planet(planet_id):
-    planet = validate_planet(planet_id)
+    planet = validate_model(Planet, planet_id)
     db.session.delete(planet)
     db.session.commit()
 
