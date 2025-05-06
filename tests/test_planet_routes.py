@@ -1,6 +1,7 @@
 from app.db import db
 from app.models.planet import Planet
 
+
 def test_get_all_planets_with_no_records(client):
     # Act
     response = client.get("/planets")
@@ -35,7 +36,10 @@ def test_get_one_planet_with_no_data(client):
     assert response.status_code == 404
     assert response_body == {"message": "Planet id 1 not found."}
 
-def test_get_one_planet_with_non_int_id_and_two_saved_records(client, two_saved_planets):
+
+def test_get_one_planet_with_non_int_id_and_two_saved_records(
+    client, two_saved_planets
+):
     # Act
     response = client.get("/planets/cat")
     response_body = response.get_json()
@@ -43,6 +47,7 @@ def test_get_one_planet_with_non_int_id_and_two_saved_records(client, two_saved_
     # Assert
     assert response.status_code == 400
     assert response_body == {"message": "Planet id cat is invalid."}
+
 
 def test_get_all_planets_with_two_saved_records(client, two_saved_planets):
     # Act
@@ -84,6 +89,7 @@ def test_create_one_planet(client):
         "diameter": 4.0,
     }
 
+
 def test_create_one_planet_with_missing_field(client):
     # Act
     response = client.post(
@@ -94,9 +100,27 @@ def test_create_one_planet_with_missing_field(client):
 
     # Assert
     assert response.status_code == 400
-    assert response_body == {
-        "message": "missing Planet information."
-    }
+    assert response_body == {"message": "missing Planet information."}
+
+
+def test_delete_planet_not_found(client):
+    # Act
+    response = client.delete("/planets/1")
+    response_body = response.get_json()
+    # Assert
+    assert response.status_code == 404
+    assert response_body == {"message": "Planet id 1 not found."}
+
+
+def test_delete_planet(client, two_saved_planets):
+    # Act
+    response = client.delete("/planets/1")
+    # Assert
+    assert response.status_code == 204
+    get_response = client.get("/planets/1")
+    assert get_response.status_code == 404
+    # query = db.select(Planet).where(Planet.id == 1)
+    # assert db.session.scalar(query) == None
 
 
 def test_update_planet(client, two_saved_planets):
@@ -106,30 +130,19 @@ def test_update_planet(client, two_saved_planets):
         json={
             "name": "Updated Planet Name",
             "description": "Updated Planet Description",
-            "diameter": 10.0
+            "diameter": 10.0,
         },
     )
     # Assert
     assert response.status_code == 204
-    query = db.select(Planet).where(Planet.id == 1)
-    planet = db.session.scalar(query)
-    assert planet.name == "Updated Planet Name"
-    assert planet.description == "Updated Planet Description"
-    assert planet.diameter == 10.0
-
-
-def test_delete_planet(client, two_saved_planets):
-    # Act
-    response = client.delete("/planets/1")
-    # Assert
-    assert response.status_code == 204
-    query = db.select(Planet).where(Planet.id == 1)
-    assert db.session.scalar(query) == None
-
-def test_delete_planet_not_found(client):
-    # Act
-    response = client.delete("/planets/1")
-    response_body = response.get_json()
-    # Assert
-    assert response.status_code == 404
-    assert response_body == {"message": "Planet id 1 not found."}
+    # query = db.select(Planet).where(Planet.id == 1)
+    # planet = db.session.scalar(query)
+    # assert planet.name == "Updated Planet Name"
+    # assert planet.description == "Updated Planet Description"
+    # assert planet.diameter == 10.0
+    get_response = client.get("/planets/1")
+    get_data = get_response.get_json()
+    assert get_response.status_code == 200
+    assert get_data["name"] == "Updated Planet Name"
+    assert get_data["description"] == "Updated Planet Description"
+    assert get_data["diameter"] == 10.0

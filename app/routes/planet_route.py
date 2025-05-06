@@ -41,9 +41,7 @@ def get_all_planets():
     response = []
 
     for planet in planets:
-        response.append(
-            planet.to_dict()
-        )
+        response.append(planet.to_dict())
 
     return response
 
@@ -60,7 +58,7 @@ def update_planet(planet_id):
     planet = validate_model(Planet, planet_id)
     request_body = request.get_json()
     validate_model_data(Planet, request_body)
-   
+
     planet.update_from_dict(request_body)
     # planet.name = request_body["name"]
     # planet.description = request_body["description"]
@@ -76,7 +74,7 @@ def delete_planet(planet_id):
     db.session.delete(planet)
     db.session.commit()
 
-    return Response(status=204, mimetype="applcation/json")
+    return Response(status=204, mimetype="application/json")
 
 
 # @planets_bp.get("/")
