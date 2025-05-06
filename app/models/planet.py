@@ -1,5 +1,9 @@
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from ..db import db
+from typing import Optional, TYPE_CHECKING
+
+# if TYPE_CHECKING:
+#     from .moon import Moon
 
 
 class Planet(db.Model):
@@ -7,6 +11,7 @@ class Planet(db.Model):
     name: Mapped[str]
     description: Mapped[str]
     diameter: Mapped[float]
+    moons: Mapped[Optional[list["Moon"]]] = relationship(back_populates="planet")
 
     def to_dict(self):
         return {
@@ -14,6 +19,7 @@ class Planet(db.Model):
             "name": self.name,
             "description": self.description,
             "diameter": self.diameter,
+            "moons": [moon.to_dict() for moon in self.moons] if self.moons else [],
         }
 
     @classmethod
@@ -24,10 +30,10 @@ class Planet(db.Model):
             diameter=planet_data["diameter"],
         )
 
-    def update_from_dict(self, planet_data):
-        self.name = (planet_data["name"],)
-        self.description = (planet_data["description"],)
-        self.diameter = planet_data["diameter"]
+    # def update_from_dict(self, planet_data):
+    #     self.name = (planet_data["name"],)
+    #     self.description = (planet_data["description"],)
+    #     self.diameter = planet_data["diameter"]
 
 
 # class Planet:
