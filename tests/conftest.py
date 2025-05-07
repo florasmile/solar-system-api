@@ -50,29 +50,29 @@ def two_saved_planets(app):
     db.session.add_all([mercury, venus])
     db.session.commit()
 
+
 @pytest.fixture
 def one_saved_planet_with_two_moons(app):
     # Arrange
     mars = Planet(
-        name="Mars", 
-        description="The red planet with the tallest volcano.", 
-        diameter=4.2
+        name="Mars",
+        description="The red planet with the tallest volcano.",
+        diameter=4.2,
     )
 
     phobos = Moon(
         name="Phobos",
         description="Surface is covered in deep grooves and impact craters.",
         size=22.4,
-        planet_id=1
+        planet_id=1,
     )
 
     deimos = Moon(
         name="Deimos",
         description="Much smoother surface than Phobos — has thick regolith (dust blanket).",
         size=12.4,
-        planet_id=1
+        planet_id=1,
     )
 
     db.session.add_all([mars, phobos, deimos])
     db.session.commit()
-    
