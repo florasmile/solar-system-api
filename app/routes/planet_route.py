@@ -59,13 +59,13 @@ def update_planet(planet_id):
     planet.name = request_body["name"]
     planet.description = request_body["description"]
     planet.diameter = request_body["diameter"]
-    planet.moons = []
-    if request_body.get("moons"):
-        for moon_data in request_body.get("moons"):
-            new_moon = Moon.from_dict(moon_data)
-            planet.moons.append(new_moon)
+    # planet.moons = []
+    # if request_body.get("moons"):
+    #     for moon_data in request_body.get("moons"):
+    #         new_moon = Moon.from_dict(moon_data)
+    #         planet.moons.append(new_moon)
 
-    print(planet.name, planet.diameter, planet.description, planet.moons)
+    # print(planet.name, planet.diameter, planet.description, planet.moons)
 
     db.session.commit()
     return Response(status=204, mimetype="application/json")
@@ -86,15 +86,16 @@ def create_moon_with_planet(planet_id):
     request_body = request.get_json()
     request_body["planet_id"] = planet.id
 
-    try:
-        new_moon = Moon.from_dict(request_body)
-    except KeyError as error:
-        response = {"message": f"Invalid request: missing {error.args[0]}"}
-        abort(make_response(response, 400))
+    return create_model(Moon, request_body)
+    # try:
+    #     new_moon = Moon.from_dict(request_body)
+    # except KeyError as error:
+    #     response = {"message": f"Invalid request: missing {error.args[0]}"}
+    #     abort(make_response(response, 400))
 
-    db.session.add(new_moon)
-    db.session.commit()
-    return make_response(new_moon.to_dict(), 201)
+    # db.session.add(new_moon)
+    # db.session.commit()
+    # return make_response(new_moon.to_dict(), 201)
 
 
 @bp.get("/<planet_id>/moons")

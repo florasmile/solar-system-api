@@ -146,3 +146,52 @@ def test_update_planet(client, two_saved_planets):
     assert get_data["name"] == "Updated Planet Name"
     assert get_data["description"] == "Updated Planet Description"
     assert get_data["diameter"] == 10.0
+
+
+# def test_create_moon_with_valid_planet_id(client, two_saved_planets):
+#     response = client.post(
+#         "/planets/1/moons",
+#         json={
+#             "name": "A test moon for planet 1",
+#             "description": "A description for test moon",
+#             "size": 1.0,
+#         },
+#     )
+
+#     response_body = response.get_json()
+
+#     assert response.status_code == 201
+#     assert response_body == {
+#         "id": 1,
+#         "name": "A test moon for planet 1",
+#         "description": "A description for test moon",
+#         "size": 1.0,
+#         "planet_id": 1
+#     }
+
+
+
+# def test_get_moons_by_planet_with_one_saved_planet(client, one_saved_planet_with_two_moons):
+#     # Act
+#     response = client.get("/planets/1/moons")
+#     response_body = response.get_json()
+
+#     # Assert
+#     assert response.status_code == 200
+#     assert response_body == [
+#         {
+#             "id": 1,
+#             "name": "Phobos",
+#             "description": "Surface is covered in deep grooves and impact craters.",
+#             "size": 22.4,
+#             "planet_id":1
+#         },
+#         {
+#             "id": 2,
+#             "name": "Deimos",
+#             "description": "Much smoother surface than Phobos — has thick regolith (dust blanket).",
+#             "size": 12.4,
+#             "planet_id": 1
+#         },
+#     ]
+    
